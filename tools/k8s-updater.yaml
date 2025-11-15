@@ -1,0 +1,34 @@
+identity:
+  name: "k8s-updater"
+  author: "bond-zhu"
+  label:
+    en_US: "k8s-updater"
+    zh_Hans: "k8s-updater"
+    pt_BR: "k8s-updater"
+    ja_JP: "k8s-updater"
+description:
+  human:
+    en_US: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
+    zh_Hans: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
+    pt_BR: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
+    ja_JP: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
+  llm: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
+parameters:
+  - name: query
+    type: string
+    required: true
+    label:
+      en_US: Query string
+      zh_Hans: 查询语句
+      pt_BR: Query string
+      ja_JP: クエリ文字列
+    human_description:
+      en_US: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
+      zh_Hans: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
+      pt_BR: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
+      ja_JP: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
+    llm_description: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
+    form: llm
+extra:
+  python:
+    source: tools/k8s-updater.py

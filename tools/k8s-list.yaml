@@ -1,0 +1,43 @@
+identity:
+  name: "k8s-list"
+  author: "bond-zhu"
+  label:
+    en_US: "K8s List"
+    zh_Hans: "K8s 列表"
+    pt_BR: "K8s Lista"
+    ja_JP: "K8s リスト"
+description:
+  human:
+    en_US: "List Deployments and Pods from a Kubernetes cluster using an uploaded kubeconfig file. Optionally filter by namespace."
+    zh_Hans: "通过上传的 kubeconfig 文件列出 Kubernetes 集群中的 Deployment 与 Pod，可选按命名空间过滤。"
+    pt_BR: "Lista Deployments e Pods de um cluster Kubernetes usando um arquivo kubeconfig enviado. Opcionalmente filtra por namespace."
+    ja_JP: "アップロードした kubeconfig を使用して Kubernetes クラスタの Deployment と Pod を一覧表示。必要に応じて namespace で絞り込み。"
+  llm: "List Deployments and Pods in Kubernetes. Requires a kubeconfig file. Optional namespace to limit scope. Returns JSON arrays of deployments and pods with key attributes."
+parameters:
+  - name: namespace
+    type: string
+    required: false
+    label:
+      en_US: "Namespace"
+      zh_Hans: "命名空间"
+      pt_BR: "Namespace"
+      ja_JP: "Namespace"
+    human_description:
+      en_US: "Optional namespace. If empty, lists across all namespaces."
+      zh_Hans: "可选。为空则列出所有命名空间。"
+      pt_BR: "Opcional. Vazio lista todos os namespaces."
+      ja_JP: "任意。空の場合は全ての namespace を対象。"
+    llm_description: "If provided, limit listing to this namespace; otherwise list all."
+    form: llm
+extra:
+  python:
+    source: tools/k8s-list.py
+output_schema:
+  type: object
+  properties:
+    deployments:
+      type: array
+      description: "List of deployments with basic attributes"
+    pods:
+      type: array
+      description: "List of pods with basic attributes"

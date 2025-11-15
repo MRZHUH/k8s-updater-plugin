@@ -1,0 +1,35 @@
+version: 0.0.1
+type: plugin
+author: bond-zhu
+name: k8s-updater
+label:
+  en_US: k8s-updater
+  ja_JP: k8s-updater
+  zh_Hans: k8s-updater
+  pt_BR: k8s-updater
+description:
+  en_US: Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables
+  ja_JP: Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables
+  zh_Hans: Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables
+  pt_BR: Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables
+icon: icon.svg
+icon_dark: icon-dark.svg
+resource:
+  memory: 268435456
+  permission: {}
+plugins:
+  tools:
+    - provider/k8s-updater.yaml
+meta:
+  version: 0.0.1
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+  minimum_dify_version: null
+created_at: 2025-11-11T22:04:54.635538+08:00
+privacy: PRIVACY.md
+verified: false
