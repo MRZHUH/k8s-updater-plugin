@@ -8,10 +8,10 @@ identity:
     ja_JP: "K8s リスト"
 description:
   human:
-    en_US: "List Deployments and Pods from a Kubernetes cluster using an uploaded kubeconfig file. Optionally filter by namespace."
-    zh_Hans: "通过上传的 kubeconfig 文件列出 Kubernetes 集群中的 Deployment 与 Pod，可选按命名空间过滤。"
-    pt_BR: "Lista Deployments e Pods de um cluster Kubernetes usando um arquivo kubeconfig enviado. Opcionalmente filtra por namespace."
-    ja_JP: "アップロードした kubeconfig を使用して Kubernetes クラスタの Deployment と Pod を一覧表示。必要に応じて namespace で絞り込み。"
+    en_US: "List Deployments and Pods using base64-encoded kubeconfig (or file path). Optionally filter by namespace."
+    zh_Hans: "使用 base64 编码的 kubeconfig（或文件路径）列出 Deployment 与 Pod，可选按命名空间过滤。"
+    pt_BR: "Lista Deployments e Pods usando kubeconfig em base64 (ou caminho de arquivo). Opcionalmente filtra por namespace."
+    ja_JP: "base64 エンコードの kubeconfig（またはファイルパス）で Deployment と Pod を一覧表示。必要に応じて namespace で絞り込み。"
   llm: "List Deployments and Pods in Kubernetes. Requires a kubeconfig file. Optional namespace to limit scope. Returns JSON arrays of deployments and pods with key attributes."
 parameters:
   - name: namespace

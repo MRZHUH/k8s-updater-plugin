@@ -15,18 +15,23 @@ identity:
 
 credentials_for_provider:
   kubeconfig:
-    type: file-input
+    type: secret-input
     required: true
     label:
-      en_US: "Kubeconfig"
-      zh_Hans: "Kubeconfig 文件"
-      pt_BR: "Kubeconfig"
-      ja_JP: "Kubeconfig"
+      en_US: "Kubeconfig(base64)"
+      zh_Hans: "Kubeconfig 文件（base64）"
+      pt_BR: "Kubeconfig(base64)"
+      ja_JP: "Kubeconfig(base64)"
+    placeholder:
+      en_US: "Paste base64-encoded kubeconfig"
+      zh_Hans: "粘贴 base64 编码的 kubeconfig"
+      pt_BR: "Cole o kubeconfig codificado em base64"
+      ja_JP: "base64 エンコードされた kubeconfig を貼り付け"
     help:
-      en_US: "Upload the kubeconfig file of the target cluster."
-      zh_Hans: "上传目标集群的 kubeconfig 文件。"
-      pt_BR: "Envie o arquivo kubeconfig do cluster de destino."
-      ja_JP: "対象クラスタの kubeconfig ファイルをアップロードしてください。"
+      en_US: "Upload base64-encoded kubeconfig content. For advanced users, file path is still supported."
+      zh_Hans: "上传 base64 编码的 kubeconfig 内容；高级用法可填写文件路径。"
+      pt_BR: "Envie o conteúdo do kubeconfig em base64; caminho de arquivo também é suportado."
+      ja_JP: "base64 でエンコードした kubeconfig をアップロード。上級者向けにファイルパスも対応。"
 
 #########################################################################################
 # If you want to support OAuth, you can uncomment the following code.
@@ -71,7 +76,6 @@ credentials_for_provider:
 #         en_US: "Access Token"
 
 tools:
-  - tools/k8s-updater.yaml
   - tools/k8s-list.yaml
 extra:
   python:
