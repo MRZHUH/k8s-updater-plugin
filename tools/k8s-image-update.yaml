@@ -1,0 +1,101 @@
+identity:
+  name: "k8s-image-update"
+  author: "bond-zhu"
+  label:
+    en_US: "K8s Image Update"
+    zh_Hans: "K8s 镜像更新"
+    pt_BR: "K8s Atualizar Imagem"
+    ja_JP: "K8s イメージ更新"
+description:
+  human:
+    en_US: "Update images of Deployment/StatefulSet/DaemonSet. Provide image and/or tag."
+    zh_Hans: "更新 Deployment/StatefulSet/DaemonSet 的镜像。可传镜像与/或 tag。"
+    pt_BR: "Atualiza imagens de Deployment/StatefulSet/DaemonSet. Informe image e/ou tag."
+    ja_JP: "Deployment/StatefulSet/DaemonSet のイメージを更新。image と tag を指定可能。"
+  llm: "Update container images across K8s workloads. Accepts resource type, name, optional namespace, image and tag."
+parameters:
+  - name: resourceType
+    type: string
+    required: true
+    label:
+      en_US: "Resource Type"
+      zh_Hans: "资源类型"
+      pt_BR: "Tipo de Recurso"
+      ja_JP: "リソース種別"
+    human_description:
+      en_US: "One of deployment, statefulset, daemonset"
+      zh_Hans: "可选 deployment/statefulset/daemonset"
+      pt_BR: "Um de deployment, statefulset, daemonset"
+      ja_JP: "deployment/statefulset/daemonset のいずれか"
+    form: llm
+    llm_description: "Choose workload kind"
+  - name: name
+    type: string
+    required: true
+    label:
+      en_US: "Name"
+      zh_Hans: "名称"
+      pt_BR: "Nome"
+      ja_JP: "名前"
+    form: llm
+    human_description:
+      en_US: "Workload name"
+      zh_Hans: "工作负载名称"
+      pt_BR: "Nome do workload"
+      ja_JP: "ワークロード名"
+    llm_description: "Target resource name"
+  - name: namespace
+    type: string
+    required: false
+    label:
+      en_US: "Namespace"
+      zh_Hans: "命名空间"
+      pt_BR: "Namespace"
+      ja_JP: "Namespace"
+    form: llm
+    human_description:
+      en_US: "Optional; default to 'default'"
+      zh_Hans: "可选，默认 'default'"
+      pt_BR: "Opcional; padrão 'default'"
+      ja_JP: "任意、デフォルトは 'default'"
+    llm_description: "Namespace of the workload"
+  - name: image
+    type: string
+    required: false
+    label:
+      en_US: "Image"
+      zh_Hans: "镜像"
+      pt_BR: "Imagem"
+      ja_JP: "イメージ"
+    human_description:
+      en_US: "Repository (may include tag)."
+      zh_Hans: "仓库名（可包含 tag）。"
+      pt_BR: "Repositório (pode incluir tag)."
+      ja_JP: "リポジトリ（tag を含む場合あり）。"
+    form: llm
+    llm_description: "Target image repository, optionally with tag"
+  - name: tag
+    type: string
+    required: false
+    label:
+      en_US: "Tag"
+      zh_Hans: "标签"
+      pt_BR: "Tag"
+      ja_JP: "タグ"
+    form: llm
+    human_description:
+      en_US: "Optional tag"
+      zh_Hans: "可选 tag"
+      pt_BR: "Tag opcional"
+      ja_JP: "任意のタグ"
+    llm_description: "Target tag"
+extra:
+  python:
+    source: tools/k8s-image-update.py
+output_schema:
+  type: object
+  properties:
+    changed:
+      type: array
+    unchanged:
+      type: array

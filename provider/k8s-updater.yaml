@@ -77,6 +77,8 @@ credentials_for_provider:
 
 tools:
   - tools/k8s-list.yaml
+  - tools/k8s-image-update.yaml
+  - tools/k8s-env-update.yaml
 extra:
   python:
     source: provider/k8s-updater.py

@@ -10,36 +10,36 @@ class K8sListTool(Tool):
         kubeconfig_param = self.runtime.credentials.get("kubeconfig")
         try:
             info = self._debug_cred_info(kubeconfig_param)
-            yield self.create_text_message(f"kubeconfig credential: {info}")
+            yield self.create_text_message(self._append_time(f"kubeconfig credential: {info}"))
         except Exception as _:
             pass
         try:
             api_client, src_info = self._build_api_client(kubeconfig_param)
             from kubernetes import client
             try:
-                yield self.create_text_message(f"kubeconfig source: {src_info}")
+                yield self.create_text_message(self._append_time(f"kubeconfig source: {src_info}"))
             except Exception as _:
                 pass
             try:
                 from kubernetes.client.rest import ApiException
                 core_v1_probe = client.CoreV1Api(api_client)
                 _ = core_v1_probe.list_namespace(limit=1)
-                yield self.create_text_message("k8s connectivity: ok")
+                yield self.create_text_message(self._append_time("k8s connectivity: ok"))
             except Exception as e:
                 try:
                     from kubernetes.client.rest import ApiException
                     if isinstance(e, ApiException):
-                        yield self.create_text_message(f"k8s connectivity error: status={e.status} reason={e.reason}")
+                        yield self.create_text_message(self._append_time(f"k8s connectivity error: status={e.status} reason={e.reason}"))
                         try:
                             body = (e.body or "")
                             if isinstance(body, str):
-                                yield self.create_text_message(body[:500])
+                                yield self.create_text_message(self._append_time(body[:500]))
                         except Exception:
                             pass
                         return
                 except Exception:
                     pass
-                yield self.create_text_message(f"k8s connectivity error: {str(e)}")
+                yield self.create_text_message(self._append_time(f"k8s connectivity error: {str(e)}"))
                 return
             apps_v1 = client.AppsV1Api(api_client)
             core_v1 = client.CoreV1Api(api_client)
@@ -71,10 +71,12 @@ class K8sListTool(Tool):
                     "podIP": p.status.pod_ip,
                     "images": images,
                 })
-            yield self.create_json_message({"deployments": deployments, "pods": pod_list})
-            yield self.create_text_message(f"Deployments: {len(deployments)}, Pods: {len(pod_list)}")
+            j = {"deployments": deployments, "pods": pod_list}
+            j.update(self._time_info())
+            yield self.create_json_message(j)
+            yield self.create_text_message(self._append_time(f"Deployments: {len(deployments)}, Pods: {len(pod_list)}"))
         except Exception as e:
-            yield self.create_text_message(f"Error: {str(e)}")
+            yield self.create_text_message(self._append_time(f"Error: {str(e)}"))
 
     def _build_api_client(self, kubeconfig_param: Any):
         from kubernetes import client, config
@@ -366,3 +368,13 @@ class K8sListTool(Tool):
             return data
         except Exception:
             return None
+
+    def _time_info(self) -> dict[str, str]:
+        import datetime
+        dt = datetime.datetime.now(datetime.timezone.utc).astimezone()
+        tz = dt.tzname() or "local"
+        return {"timezone": tz, "time": dt.isoformat()}
+
+    def _append_time(self, text: str) -> str:
+        info = self._time_info()
+        return f"{text} | timezone={info['timezone']} time={info['time']}"
