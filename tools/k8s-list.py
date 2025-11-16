@@ -7,6 +7,22 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 class K8sListTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage, None, None]:
         namespace = tool_parameters.get("namespace")
+        resource_type = (tool_parameters.get("resourceType") or "pod").strip().lower()
+        alias = {
+            "po": "pod",
+            "pod": "pod",
+            "deploy": "deployment",
+            "deployment": "deployment",
+            "sts": "statefulset",
+            "statefulset": "statefulset",
+            "ds": "daemonset",
+            "daemonset": "daemonset",
+            "svc": "service",
+            "service": "service",
+            "ing": "ingress",
+            "ingress": "ingress",
+        }
+        resource_type = alias.get(resource_type, resource_type)
         kubeconfig_param = self.runtime.credentials.get("kubeconfig")
         try:
             info = self._debug_cred_info(kubeconfig_param)
@@ -43,38 +59,46 @@ class K8sListTool(Tool):
                 return
             apps_v1 = client.AppsV1Api(api_client)
             core_v1 = client.CoreV1Api(api_client)
-            if namespace:
-                dps = apps_v1.list_namespaced_deployment(namespace=namespace).items
-                pods = core_v1.list_namespaced_pod(namespace=namespace).items
+            items = []
+            if resource_type == "deployment":
+                objs = (apps_v1.list_namespaced_deployment(namespace=namespace).items if namespace else apps_v1.list_deployment_for_all_namespaces().items)
+                for d in objs:
+                    images = [c.image for c in (d.spec.template.spec.containers or [])]
+                    items.append({"kind": "Deployment", "name": d.metadata.name, "namespace": d.metadata.namespace, "labels": d.metadata.labels or {}, "replicas": d.spec.replicas, "availableReplicas": d.status.available_replicas or 0, "images": images})
+            elif resource_type == "statefulset":
+                objs = (apps_v1.list_namespaced_stateful_set(namespace=namespace).items if namespace else apps_v1.list_stateful_set_for_all_namespaces().items)
+                for s in objs:
+                    images = [c.image for c in (s.spec.template.spec.containers or [])]
+                    items.append({"kind": "StatefulSet", "name": s.metadata.name, "namespace": s.metadata.namespace, "labels": s.metadata.labels or {}, "replicas": s.spec.replicas, "readyReplicas": s.status.ready_replicas or 0, "images": images})
+            elif resource_type == "daemonset":
+                objs = (apps_v1.list_namespaced_daemon_set(namespace=namespace).items if namespace else apps_v1.list_daemon_set_for_all_namespaces().items)
+                for ds in objs:
+                    images = [c.image for c in (ds.spec.template.spec.containers or [])]
+                    items.append({"kind": "DaemonSet", "name": ds.metadata.name, "namespace": ds.metadata.namespace, "labels": ds.metadata.labels or {}, "desiredNumberScheduled": ds.status.desired_number_scheduled or 0, "numberReady": ds.status.number_ready or 0, "images": images})
+            elif resource_type == "service":
+                objs = (core_v1.list_namespaced_service(namespace=namespace).items if namespace else core_v1.list_service_for_all_namespaces().items)
+                for sv in objs:
+                    ports = [f"{p.port}/{p.protocol}" for p in (sv.spec.ports or [])]
+                    items.append({"kind": "Service", "name": sv.metadata.name, "namespace": sv.metadata.namespace, "labels": sv.metadata.labels or {}, "type": sv.spec.type, "clusterIP": sv.spec.cluster_ip, "ports": ports})
+            elif resource_type == "ingress":
+                net_v1 = client.NetworkingV1Api(api_client)
+                objs = (net_v1.list_namespaced_ingress(namespace=namespace).items if namespace else net_v1.list_ingress_for_all_namespaces().items)
+                for ig in objs:
+                    hosts = []
+                    rules = ig.spec.rules or []
+                    for r in rules:
+                        if getattr(r, "host", None):
+                            hosts.append(r.host)
+                    items.append({"kind": "Ingress", "name": ig.metadata.name, "namespace": ig.metadata.namespace, "labels": ig.metadata.labels or {}, "hosts": hosts})
             else:
-                dps = apps_v1.list_deployment_for_all_namespaces().items
-                pods = core_v1.list_pod_for_all_namespaces().items
-            deployments = []
-            for d in dps:
-                images = [c.image for c in (d.spec.template.spec.containers or [])]
-                deployments.append({
-                    "name": d.metadata.name,
-                    "namespace": d.metadata.namespace,
-                    "labels": d.metadata.labels or {},
-                    "replicas": d.spec.replicas,
-                    "availableReplicas": d.status.available_replicas or 0,
-                    "images": images,
-                })
-            pod_list = []
-            for p in pods:
-                images = [c.image for c in (p.spec.containers or [])]
-                pod_list.append({
-                    "name": p.metadata.name,
-                    "namespace": p.metadata.namespace,
-                    "phase": p.status.phase,
-                    "nodeName": p.spec.node_name,
-                    "podIP": p.status.pod_ip,
-                    "images": images,
-                })
-            j = {"deployments": deployments, "pods": pod_list}
+                objs = (core_v1.list_namespaced_pod(namespace=namespace).items if namespace else core_v1.list_pod_for_all_namespaces().items)
+                for p in objs:
+                    images = [c.image for c in (p.spec.containers or [])]
+                    items.append({"kind": "Pod", "name": p.metadata.name, "namespace": p.metadata.namespace, "labels": p.metadata.labels or {}, "phase": p.status.phase, "nodeName": p.spec.node_name, "podIP": p.status.pod_ip, "images": images})
+            j = {"items": items}
             j.update(self._time_info())
             yield self.create_json_message(j)
-            yield self.create_text_message(self._append_time(f"Deployments: {len(deployments)}, Pods: {len(pod_list)}"))
+            yield self.create_text_message(self._append_time(f"ResourceType={resource_type} count={len(items)}"))
         except Exception as e:
             yield self.create_text_message(self._append_time(f"Error: {str(e)}"))
 

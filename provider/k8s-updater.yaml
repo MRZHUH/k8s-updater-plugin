@@ -79,6 +79,8 @@ tools:
   - tools/k8s-list.yaml
   - tools/k8s-image-update.yaml
   - tools/k8s-env-update.yaml
+  - tools/k8s-get-resource.yaml
+  - tools/k8s-events.yaml
 extra:
   python:
     source: provider/k8s-updater.py

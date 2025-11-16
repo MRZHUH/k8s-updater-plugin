@@ -8,11 +8,11 @@ identity:
     ja_JP: "K8s リスト"
 description:
   human:
-    en_US: "List Deployments and Pods using base64-encoded kubeconfig (or file path). Optionally filter by namespace."
-    zh_Hans: "使用 base64 编码的 kubeconfig（或文件路径）列出 Deployment 与 Pod，可选按命名空间过滤。"
-    pt_BR: "Lista Deployments e Pods usando kubeconfig em base64 (ou caminho de arquivo). Opcionalmente filtra por namespace."
-    ja_JP: "base64 エンコードの kubeconfig（またはファイルパス）で Deployment と Pod を一覧表示。必要に応じて namespace で絞り込み。"
-  llm: "List Deployments and Pods in Kubernetes. Requires a kubeconfig file. Optional namespace to limit scope. Returns JSON arrays of deployments and pods with key attributes."
+    en_US: "List Kubernetes resources using base64-encoded kubeconfig (or file path). Supports pods, deployments, statefulsets, daemonsets, services, ingresses. Default: pods."
+    zh_Hans: "使用 base64 编码的 kubeconfig（或文件路径）列出 Kubernetes 资源。支持 pods、deployments、statefulsets、daemonsets、services、ingresses。默认：pods。"
+    pt_BR: "Lista recursos do Kubernetes usando kubeconfig em base64 (ou caminho). Suporta pods, deployments, statefulsets, daemonsets, services, ingresses. Padrão: pods."
+    ja_JP: "base64 の kubeconfig（またはパス）で Kubernetes リソースを一覧。pods, deployments, statefulsets, daemonsets, services, ingresses をサポート。デフォルト: pods。"
+  llm: "List Kubernetes resources. Accepts resourceType and optional namespace. Returns items with basic attributes."
 parameters:
   - name: namespace
     type: string
@@ -29,15 +29,31 @@ parameters:
       ja_JP: "任意。空の場合は全ての namespace を対象。"
     llm_description: "If provided, limit listing to this namespace; otherwise list all."
     form: llm
+  - name: resourceType
+    type: string
+    required: false
+    label:
+      en_US: "Resource Type"
+      zh_Hans: "资源类型"
+      pt_BR: "Tipo de Recurso"
+      ja_JP: "リソース種別"
+    human_description:
+      en_US: "Optional. pod/deploy/sts/ds/svc/ing (and full names). Default pod."
+      zh_Hans: "可选。pod/deploy/sts/ds/svc/ing（及全称）。默认 pod。"
+      pt_BR: "Opcional. pod/deploy/sts/ds/svc/ing (e nomes completos). Padrão pod."
+      ja_JP: "任意。pod/deploy/sts/ds/svc/ing（および正式名）。デフォルト pod。"
+    llm_description: "Resource kind (supports kubectl-style short names)"
+    form: llm
 extra:
   python:
     source: tools/k8s-list.py
 output_schema:
   type: object
   properties:
-    deployments:
+    items:
       type: array
-      description: "List of deployments with basic attributes"
-    pods:
-      type: array
-      description: "List of pods with basic attributes"
+      description: "List of resources with basic attributes"
+    timezone:
+      type: string
+    time:
+      type: string

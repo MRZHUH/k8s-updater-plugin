@@ -89,6 +89,21 @@ parameters:
       pt_BR: "Valor da variável"
       ja_JP: "環境変数の値"
     llm_description: "Environment variable value"
+  - name: container
+    type: string
+    required: false
+    label:
+      en_US: "Container"
+      zh_Hans: "容器名称"
+      pt_BR: "Container"
+      ja_JP: "コンテナ名"
+    form: llm
+    human_description:
+      en_US: "Optional; if provided, only update this container"
+      zh_Hans: "可选；传入则仅修改该容器"
+      pt_BR: "Opcional; se informado, atualiza apenas este container"
+      ja_JP: "任意；指定時は当該コンテナのみ更新"
+    llm_description: "Target container name; default updates all"
 extra:
   python:
     source: tools/k8s-env-update.py

@@ -1,0 +1,58 @@
+identity:
+  name: "k8s-events"
+  author: "bond-zhu"
+  label:
+    en_US: "K8s Events"
+    zh_Hans: "K8s 事件"
+    pt_BR: "K8s Eventos"
+    ja_JP: "K8s イベント"
+description:
+  human:
+    en_US: "Get cluster events with optional namespace and line limit."
+    zh_Hans: "获取集群事件，支持命名空间与行数限制。"
+    pt_BR: "Obtenha eventos do cluster com namespace opcional e limite de linhas."
+    ja_JP: "クラスタイベント取得。namespace と行数制限に対応。"
+  llm: "Return recent events from Kubernetes cluster. Accepts namespace and limit."
+parameters:
+  - name: namespace
+    type: string
+    required: false
+    label:
+      en_US: "Namespace"
+      zh_Hans: "命名空间"
+      pt_BR: "Namespace"
+      ja_JP: "Namespace"
+    form: llm
+    human_description:
+      en_US: "Optional; if empty, fetch across all namespaces"
+      zh_Hans: "可选；为空时获取所有命名空间"
+      pt_BR: "Opcional; vazio busca todos namespaces"
+      ja_JP: "任意；空の場合は全 namespace"
+    llm_description: "Namespace for events"
+  - name: limit
+    type: number
+    required: false
+    label:
+      en_US: "Limit"
+      zh_Hans: "行数限制"
+      pt_BR: "Limite"
+      ja_JP: "上限"
+    form: llm
+    human_description:
+      en_US: "Max number of events to return"
+      zh_Hans: "返回的事件最大数量"
+      pt_BR: "Número máximo de eventos"
+      ja_JP: "返すイベント数の上限"
+    llm_description: "Max events to return"
+extra:
+  python:
+    source: tools/k8s-events.py
+output_schema:
+  type: object
+  properties:
+    events:
+      type: array
+    timezone:
+      type: string
+    time:
+      type: string

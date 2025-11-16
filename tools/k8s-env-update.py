@@ -7,10 +7,20 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 class K8sEnvUpdateTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage, None, None]:
         resource_type = (tool_parameters.get("resourceType") or "").strip().lower()
+        alias = {
+            "deploy": "deployment",
+            "deployment": "deployment",
+            "sts": "statefulset",
+            "statefulset": "statefulset",
+            "ds": "daemonset",
+            "daemonset": "daemonset",
+        }
+        resource_type = alias.get(resource_type, resource_type)
         name = (tool_parameters.get("name") or "").strip()
         namespace = (tool_parameters.get("namespace") or "").strip() or None
         env_key = (tool_parameters.get("envKey") or "").strip()
         env_value = (tool_parameters.get("envValue") or "").strip()
+        container_filter = (tool_parameters.get("container") or "").strip() or None
         kubeconfig_param = self.runtime.credentials.get("kubeconfig")
         try:
             api_client, _ = self._build_api_client(kubeconfig_param)
@@ -39,6 +49,8 @@ class K8sEnvUpdateTool(Tool):
             unchanged = []
             patch_containers = []
             for c in containers:
+                if container_filter and c.name != container_filter:
+                    continue
                 cur_env = list(c.env or [])
                 found = False
                 cur_val = None

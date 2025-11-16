@@ -1,0 +1,73 @@
+identity:
+  name: "k8s-get-yaml"
+  author: "bond-zhu"
+  label:
+    en_US: "K8s Get YAML"
+    zh_Hans: "K8s 获取 YAML"
+    pt_BR: "K8s Obter YAML"
+    ja_JP: "K8s YAML 取得"
+description:
+  human:
+    en_US: "Get YAML of Kubernetes resources (pod, deployment, statefulset, daemonset, service, ingress)."
+    zh_Hans: "获取 Kubernetes 资源（pod、deployment、statefulset、daemonset、service、ingress）的 YAML。"
+    pt_BR: "Obtenha YAML de recursos do Kubernetes (pod, deployment, statefulset, daemonset, service, ingress)."
+    ja_JP: "Kubernetes リソース（pod、deployment、statefulset、daemonset、service、ingress）の YAML を取得。"
+  llm: "Return YAML for a specific Kubernetes resource by type/name/namespace."
+parameters:
+  - name: resourceType
+    type: string
+    required: true
+    label:
+      en_US: "Resource Type"
+      zh_Hans: "资源类型"
+      pt_BR: "Tipo de Recurso"
+      ja_JP: "リソース種別"
+    human_description:
+      en_US: "One of pod, deployment, statefulset, daemonset, service, ingress"
+      zh_Hans: "pod、deployment、statefulset、daemonset、service、ingress 之一"
+      pt_BR: "Um de pod, deployment, statefulset, daemonset, service, ingress"
+      ja_JP: "pod, deployment, statefulset, daemonset, service, ingress のいずれか"
+    llm_description: "Resource kind"
+    form: llm
+  - name: name
+    type: string
+    required: true
+    label:
+      en_US: "Name"
+      zh_Hans: "名称"
+      pt_BR: "Nome"
+      ja_JP: "名前"
+    form: llm
+    human_description:
+      en_US: "Resource name"
+      zh_Hans: "资源名称"
+      pt_BR: "Nome do recurso"
+      ja_JP: "リソース名"
+    llm_description: "Resource name"
+  - name: namespace
+    type: string
+    required: false
+    label:
+      en_US: "Namespace"
+      zh_Hans: "命名空间"
+      pt_BR: "Namespace"
+      ja_JP: "Namespace"
+    form: llm
+    human_description:
+      en_US: "Optional; default to 'default'"
+      zh_Hans: "可选，默认 'default'"
+      pt_BR: "Opcional; padrão 'default'"
+      ja_JP: "任意、デフォルトは 'default'"
+    llm_description: "Namespace"
+extra:
+  python:
+    source: tools/k8s-get-yaml.py
+output_schema:
+  type: object
+  properties:
+    yaml:
+      type: string
+    timezone:
+      type: string
+    time:
+      type: string

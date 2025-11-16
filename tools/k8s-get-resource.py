@@ -4,82 +4,65 @@ from typing import Any
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
-class K8sImageUpdateTool(Tool):
+class K8sGetResourceTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage, None, None]:
         resource_type = (tool_parameters.get("resourceType") or "").strip().lower()
+        output_format = ((tool_parameters.get("outputFormat") or "json").strip().lower()) or "json"
         alias = {
+            "po": "pod",
+            "pod": "pod",
             "deploy": "deployment",
             "deployment": "deployment",
             "sts": "statefulset",
             "statefulset": "statefulset",
             "ds": "daemonset",
             "daemonset": "daemonset",
+            "svc": "service",
+            "service": "service",
+            "ing": "ingress",
+            "ingress": "ingress",
         }
         resource_type = alias.get(resource_type, resource_type)
         name = (tool_parameters.get("name") or "").strip()
         namespace = (tool_parameters.get("namespace") or "").strip() or None
-        image_param = tool_parameters.get("image")
-        tag_param = tool_parameters.get("tag")
-        container_filter = (tool_parameters.get("container") or "").strip() or None
         kubeconfig_param = self.runtime.credentials.get("kubeconfig")
         try:
             api_client, _ = self._build_api_client(kubeconfig_param)
             from kubernetes import client
-            apps = client.AppsV1Api(api_client)
-            if resource_type not in {"deployment", "statefulset", "daemonset"}:
-                yield self.create_text_message("Error: invalid resourceType")
+            if not resource_type or not name:
+                yield self.create_text_message(self._append_time("Error: resourceType and name are required"))
                 return
-            if not name:
-                yield self.create_text_message("Error: name is required")
-                return
-            getter = {
-                "deployment": apps.read_namespaced_deployment,
-                "statefulset": apps.read_namespaced_stateful_set,
-                "daemonset": apps.read_namespaced_daemon_set,
-            }[resource_type]
-            patcher = {
-                "deployment": apps.patch_namespaced_deployment,
-                "statefulset": apps.patch_namespaced_stateful_set,
-                "daemonset": apps.patch_namespaced_daemon_set,
-            }[resource_type]
             ns = namespace or "default"
-            obj = getter(name=name, namespace=ns)
-            containers = list((obj.spec.template.spec.containers or []))
-            desired_repo, desired_tag = self._desired(image_param, tag_param)
-            changed = []
-            unchanged = []
-            patch_containers = []
-            for c in containers:
-                if container_filter and c.name != container_filter:
-                    continue
-                cur_repo, cur_tag = self._split_image(c.image or "")
-                new_repo = cur_repo if desired_repo is None else desired_repo
-                new_tag = cur_tag if desired_tag is None else desired_tag
-                if image_param and (":" in str(image_param)) and (tag_param is None):
-                    r2, t2 = self._split_image(str(image_param))
-                    new_repo = r2
-                    new_tag = t2 if t2 else (cur_tag or "latest")
-                if desired_repo is None and desired_tag is None:
-                    unchanged.append({"container": c.name, "image": c.image})
-                    continue
-                new_image = new_repo + (f":{new_tag}" if new_tag else "")
-                if new_image == (c.image or ""):
-                    unchanged.append({"container": c.name, "image": c.image})
-                else:
-                    changed.append({"container": c.name, "from": c.image, "to": new_image})
-                    patch_containers.append({"name": c.name, "image": new_image})
-            if not changed:
-                j = {"changed": changed, "unchanged": unchanged}
-                j.update(self._time_info())
-                yield self.create_json_message(j)
-                yield self.create_text_message(self._append_time("No changes applied"))
+            apps = client.AppsV1Api(api_client)
+            core = client.CoreV1Api(api_client)
+            net = client.NetworkingV1Api(api_client)
+            if resource_type == "deployment":
+                obj = apps.read_namespaced_deployment(name=name, namespace=ns)
+            elif resource_type == "statefulset":
+                obj = apps.read_namespaced_stateful_set(name=name, namespace=ns)
+            elif resource_type == "daemonset":
+                obj = apps.read_namespaced_daemon_set(name=name, namespace=ns)
+            elif resource_type == "service":
+                obj = core.read_namespaced_service(name=name, namespace=ns)
+            elif resource_type == "ingress":
+                obj = net.read_namespaced_ingress(name=name, namespace=ns)
+            elif resource_type == "pod":
+                obj = core.read_namespaced_pod(name=name, namespace=ns)
+            else:
+                yield self.create_text_message(self._append_time("Error: unsupported resourceType"))
                 return
-            body = {"spec": {"template": {"spec": {"containers": patch_containers}}}}
-            patcher(name=name, namespace=ns, body=body)
-            j = {"changed": changed, "unchanged": unchanged}
+            ac = client.ApiClient()
+            data = ac.sanitize_for_serialization(obj)
+            j = {}
+            if output_format == "yaml":
+                import yaml
+                y = yaml.safe_dump(data, sort_keys=False)
+                j["yaml"] = y
+            else:
+                j["object"] = data
             j.update(self._time_info())
             yield self.create_json_message(j)
-            yield self.create_text_message(self._append_time(f"Updated {resource_type} {name} in namespace {ns}"))
+            yield self.create_text_message(self._append_time(f"Fetched {resource_type} {name} in namespace {ns} format={output_format}"))
         except Exception as e:
             try:
                 from kubernetes.client.rest import ApiException
@@ -122,27 +105,6 @@ class K8sImageUpdateTool(Tool):
             config.load_kube_config_from_dict(data)
             return client.ApiClient(), {"source": "str.base64"}
         raise ValueError("Invalid kubeconfig")
-
-    def _split_image(self, img: str) -> tuple[str, str | None]:
-        s = img or ""
-        ls = s.rfind("/")
-        lc = s.rfind(":")
-        if lc > ls:
-            return s[:lc], s[lc+1:]
-        return s, None
-
-    def _desired(self, image_param: Any, tag_param: Any) -> tuple[str | None, str | None]:
-        image = (str(image_param) if image_param else None)
-        tag = (str(tag_param) if tag_param else None)
-        if image and tag:
-            r, _t = self._split_image(image)
-            return r, tag
-        if image and not tag:
-            r, t = self._split_image(image)
-            return r, t
-        if (not image) and tag:
-            return None, tag
-        return None, None
 
     def _time_info(self) -> dict[str, str]:
         import datetime

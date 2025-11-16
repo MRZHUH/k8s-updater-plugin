@@ -1,4 +1,4 @@
-version: 0.0.2
+version: 0.0.4
 type: plugin
 author: bond-zhu
 name: k8s-updater
@@ -21,7 +21,7 @@ plugins:
   tools:
     - provider/k8s-updater.yaml
 meta:
-  version: 0.0.2
+  version: 0.0.4
   arch:
     - amd64
     - arm64
