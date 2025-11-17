@@ -1,6 +1,6 @@
 version: 0.0.1
 type: plugin
-author: MRZHUH
+author: mrzhuh
 name: k8s-updater
 label:
   en_US: K8s Updater
