@@ -15,6 +15,10 @@ English | [中文说明](README.zh-Hans.md)
 
 ![Workflow](images/workflow.png)
 
+### Result
+
+![Workflow Result](images/workflow-node-result.png)
+
 ### Credentials and TLS Mode
 
 - Required: `kubeconfig` (base64 content or file path)

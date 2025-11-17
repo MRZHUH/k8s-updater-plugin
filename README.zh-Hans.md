@@ -15,6 +15,10 @@
 
 ![工作流](images/workflow.png)
 
+### 执行结果
+
+![执行结果](images/workflow-node-result.png)
+
 ### 凭证与 TLS 模式
 
 - 必填凭证：`kubeconfig`（支持 base64 内容或文件路径）
