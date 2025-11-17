@@ -1,6 +1,6 @@
 identity:
   name: "k8s-list"
-  author: "bond-zhu"
+  author: "MRZHUH"
   label:
     en_US: "List Resources"
     zh_Hans: "获取资源列表"

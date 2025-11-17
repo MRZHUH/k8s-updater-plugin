@@ -1,6 +1,6 @@
 identity:
   name: "k8s-get-yaml"
-  author: "bond-zhu"
+  author: "MRZHUH"
   label:
     en_US: "K8s Get YAML"
     zh_Hans: "K8s 获取 YAML"

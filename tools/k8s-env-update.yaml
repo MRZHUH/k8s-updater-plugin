@@ -1,6 +1,6 @@
 identity:
   name: "k8s-env-update"
-  author: "bond-zhu"
+  author: "MRZHUH"
   label:
     en_US: "Update Environment Variables"
     zh_Hans: "更新环境变量"

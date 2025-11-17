@@ -1,6 +1,6 @@
 identity:
   name: "k8s-events"
-  author: "bond-zhu"
+  author: "MRZHUH"
   label:
     en_US: "Get Events"
     zh_Hans: "获取事件"

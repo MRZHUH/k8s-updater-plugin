@@ -2,7 +2,7 @@
 
 English | [中文说明](README.zh-Hans.md)
 
-**Author:** bond-zhu  
+**Author:** MRZHUH  
 **Version:** 0.0.1  
 **Type:** tool
 
