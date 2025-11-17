@@ -2,10 +2,10 @@ identity:
   name: "k8s-env-update"
   author: "bond-zhu"
   label:
-    en_US: "K8s Env Update"
-    zh_Hans: "K8s 环境变量更新"
-    pt_BR: "K8s Atualizar Env"
-    ja_JP: "K8s 環境変数更新"
+    en_US: "Update Environment Variables"
+    zh_Hans: "更新环境变量"
+    pt_BR: "Atualizar Variáveis de Ambiente"
+    ja_JP: "環境変数更新"
 description:
   human:
     en_US: "Update environment variables of Deployment/StatefulSet/DaemonSet across containers."

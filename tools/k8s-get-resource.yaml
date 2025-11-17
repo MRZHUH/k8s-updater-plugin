@@ -2,16 +2,16 @@ identity:
   name: "k8s-get-resource"
   author: "bond-zhu"
   label:
-    en_US: "K8s Get Resource"
-    zh_Hans: "K8s 获取资源"
-    pt_BR: "K8s Obter Recurso"
-    ja_JP: "K8s リソース取得"
+    en_US: "Get Resource"
+    zh_Hans: "获取资源"
+    pt_BR: "Obter Recurso"
+    ja_JP: "リソース取得"
 description:
   human:
-    en_US: "Get resource in JSON or YAML (pod/deployment/statefulset/daemonset/service/ingress). Default JSON."
-    zh_Hans: "获取资源的 JSON 或 YAML（pod/deployment/statefulset/daemonset/service/ingress），默认 JSON。"
-    pt_BR: "Obtenha recurso em JSON ou YAML (pod/deployment/statefulset/daemonset/service/ingress). Padrão JSON."
-    ja_JP: "JSON または YAML でリソース取得（pod/deployment/statefulset/daemonset/service/ingress）。デフォルト JSON。"
+    en_US: "Get resource in JSON or YAML (node/pod/deployment/statefulset/daemonset/service/ingress). Default JSON."
+    zh_Hans: "获取资源的 JSON 或 YAML（node/pod/deployment/statefulset/daemonset/service/ingress），默认 JSON。"
+    pt_BR: "Obtenha recurso em JSON ou YAML (node/pod/deployment/statefulset/daemonset/service/ingress). Padrão JSON."
+    ja_JP: "JSON または YAML でリソース取得（node/pod/deployment/statefulset/daemonset/service/ingress）。デフォルト JSON。"
   llm: "Return resource by type/name/namespace with selectable output format (json|yaml)."
 parameters:
   - name: resourceType
@@ -23,15 +23,15 @@ parameters:
       pt_BR: "Tipo de Recurso"
       ja_JP: "リソース種別"
     human_description:
-      en_US: "One of pod, deployment, statefulset, daemonset, service, ingress"
-      zh_Hans: "pod、deployment、statefulset、daemonset、service、ingress 之一"
-      pt_BR: "Um de pod, deployment, statefulset, daemonset, service, ingress"
-      ja_JP: "pod, deployment, statefulset, daemonset, service, ingress のいずれか"
+      en_US: "One of node, pod, deployment, statefulset, daemonset, service, ingress"
+      zh_Hans: "node、pod、deployment、statefulset、daemonset、service、ingress 之一"
+      pt_BR: "Um de node, pod, deployment, statefulset, daemonset, service, ingress"
+      ja_JP: "node, pod, deployment, statefulset, daemonset, service, ingress のいずれか"
     llm_description: "Resource kind"
     form: llm
   - name: name
     type: string
-    required: true
+    required: false
     label:
       en_US: "Name"
       zh_Hans: "名称"
@@ -39,11 +39,11 @@ parameters:
       ja_JP: "名前"
     form: llm
     human_description:
-      en_US: "Resource name"
-      zh_Hans: "资源名称"
-      pt_BR: "Nome do recurso"
-      ja_JP: "リソース名"
-    llm_description: "Resource name"
+      en_US: "Resource name; if empty, list resources"
+      zh_Hans: "资源名称；为空则列出资源"
+      pt_BR: "Nome do recurso; vazio lista recursos"
+      ja_JP: "リソース名；空なら一覧"
+    llm_description: "Optional. If missing, list resources"
   - name: namespace
     type: string
     required: false
@@ -84,6 +84,8 @@ output_schema:
       type: object
     yaml:
       type: string
+    items:
+      type: array
     timezone:
       type: string
     time:

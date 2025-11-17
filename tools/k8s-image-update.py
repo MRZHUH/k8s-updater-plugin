@@ -100,27 +100,92 @@ class K8sImageUpdateTool(Tool):
         if isinstance(kubeconfig_param, dict):
             if "path" in kubeconfig_param and isinstance(kubeconfig_param["path"], str) and os.path.exists(kubeconfig_param["path"]):
                 config.load_kube_config(config_file=kubeconfig_param["path"])
-                return client.ApiClient(), {"source": "path"}
+                tls_mode = (self.runtime.credentials.get("tlsMode") or os.environ.get("K8S_TLS_MODE") or "strict")
+                cfg = client.Configuration.get_default_copy()
+                if tls_mode == "skip-hostname":
+                    try:
+                        cfg.assert_hostname = False
+                    except Exception:
+                        pass
+                elif tls_mode == "insecure":
+                    cfg.verify_ssl = False
+                    try:
+                        cfg.assert_hostname = False
+                    except Exception:
+                        pass
+                return client.ApiClient(configuration=cfg), {"source": "path"}
             if "file" in kubeconfig_param and isinstance(kubeconfig_param["file"], dict):
                 p = kubeconfig_param["file"].get("path")
                 if isinstance(p, str) and os.path.exists(p):
                     config.load_kube_config(config_file=p)
-                    return client.ApiClient(), {"source": "file.path"}
+                    tls_mode = (self.runtime.credentials.get("tlsMode") or os.environ.get("K8S_TLS_MODE") or "strict")
+                    cfg = client.Configuration.get_default_copy()
+                    if tls_mode == "skip-hostname":
+                        try:
+                            cfg.assert_hostname = False
+                        except Exception:
+                            pass
+                    elif tls_mode == "insecure":
+                        cfg.verify_ssl = False
+                        try:
+                            cfg.assert_hostname = False
+                        except Exception:
+                            pass
+                    return client.ApiClient(configuration=cfg), {"source": "file.path"}
             if "content" in kubeconfig_param and isinstance(kubeconfig_param["content"], str):
                 raw = kubeconfig_param["content"].strip()
                 decoded = base64.b64decode(raw).decode("utf-8")
                 data = yaml.safe_load(decoded)
                 config.load_kube_config_from_dict(data)
-                return client.ApiClient(), {"source": "content-base64"}
+                tls_mode = (self.runtime.credentials.get("tlsMode") or os.environ.get("K8S_TLS_MODE") or "strict")
+                cfg = client.Configuration.get_default_copy()
+                if tls_mode == "skip-hostname":
+                    try:
+                        cfg.assert_hostname = False
+                    except Exception:
+                        pass
+                elif tls_mode == "insecure":
+                    cfg.verify_ssl = False
+                    try:
+                        cfg.assert_hostname = False
+                    except Exception:
+                        pass
+                return client.ApiClient(configuration=cfg), {"source": "content-base64"}
         if isinstance(kubeconfig_param, str):
             s = kubeconfig_param.strip()
             if os.path.exists(s):
                 config.load_kube_config(config_file=s)
-                return client.ApiClient(), {"source": "str.path"}
+                tls_mode = (self.runtime.credentials.get("tlsMode") or os.environ.get("K8S_TLS_MODE") or "strict")
+                cfg = client.Configuration.get_default_copy()
+                if tls_mode == "skip-hostname":
+                    try:
+                        cfg.assert_hostname = False
+                    except Exception:
+                        pass
+                elif tls_mode == "insecure":
+                    cfg.verify_ssl = False
+                    try:
+                        cfg.assert_hostname = False
+                    except Exception:
+                        pass
+                return client.ApiClient(configuration=cfg), {"source": "str.path"}
             decoded = base64.b64decode(s).decode("utf-8")
             data = yaml.safe_load(decoded)
             config.load_kube_config_from_dict(data)
-            return client.ApiClient(), {"source": "str.base64"}
+            tls_mode = (self.runtime.credentials.get("tlsMode") or os.environ.get("K8S_TLS_MODE") or "strict")
+            cfg = client.Configuration.get_default_copy()
+            if tls_mode == "skip-hostname":
+                try:
+                    cfg.assert_hostname = False
+                except Exception:
+                    pass
+            elif tls_mode == "insecure":
+                cfg.verify_ssl = False
+                try:
+                    cfg.assert_hostname = False
+                except Exception:
+                    pass
+            return client.ApiClient(configuration=cfg), {"source": "str.base64"}
         raise ValueError("Invalid kubeconfig")
 
     def _split_image(self, img: str) -> tuple[str, str | None]:

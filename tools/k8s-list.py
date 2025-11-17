@@ -11,6 +11,8 @@ class K8sListTool(Tool):
         alias = {
             "po": "pod",
             "pod": "pod",
+            "no": "node",
+            "node": "node",
             "deploy": "deployment",
             "deployment": "deployment",
             "sts": "statefulset",
@@ -90,6 +92,55 @@ class K8sListTool(Tool):
                         if getattr(r, "host", None):
                             hosts.append(r.host)
                     items.append({"kind": "Ingress", "name": ig.metadata.name, "namespace": ig.metadata.namespace, "labels": ig.metadata.labels or {}, "hosts": hosts})
+            elif resource_type == "node":
+                objs = client.CoreV1Api(api_client).list_node().items
+                for n in objs:
+                    labels = n.metadata.labels or {}
+                    roles = []
+                    for k in list(labels.keys()):
+                        if k.startswith("node-role.kubernetes.io/"):
+                            try:
+                                roles.append(k.split("/", 1)[1])
+                            except Exception:
+                                pass
+                    r2 = labels.get("kubernetes.io/role")
+                    if r2:
+                        roles.append(r2)
+                    ready = None
+                    try:
+                        for c in (n.status.conditions or []):
+                            if getattr(c, "type", "") == "Ready":
+                                ready = (getattr(c, "status", "") == "True")
+                                break
+                    except Exception:
+                        pass
+                    addresses = {}
+                    try:
+                        for a in (n.status.addresses or []):
+                            t = getattr(a, "type", None)
+                            v = getattr(a, "address", None)
+                            if t and v:
+                                addresses[t] = v
+                    except Exception:
+                        pass
+                    taints = []
+                    try:
+                        for t in (n.spec.taints or []):
+                            taints.append({"key": t.key, "value": t.value, "effect": t.effect})
+                    except Exception:
+                        pass
+                    items.append({
+                        "kind": "Node",
+                        "name": n.metadata.name,
+                        "labels": labels,
+                        "roles": roles,
+                        "ready": bool(ready) if ready is not None else None,
+                        "kubeletVersion": getattr(getattr(n.status, "node_info", None), "kubelet_version", None),
+                        "addresses": addresses,
+                        "capacity": (getattr(n.status, "capacity", {}) or {}),
+                        "allocatable": (getattr(n.status, "allocatable", {}) or {}),
+                        "taints": taints,
+                    })
             else:
                 objs = (core_v1.list_namespaced_pod(namespace=namespace).items if namespace else core_v1.list_pod_for_all_namespaces().items)
                 for p in objs:
@@ -169,7 +220,20 @@ class K8sListTool(Tool):
                     data["current-context"] = name
             info = _extract_info_from_data(data, source)
             config.load_kube_config_from_dict(data)
-            return client.ApiClient(), info
+            tls_mode = (self.runtime.credentials.get("tlsMode") or os.environ.get("K8S_TLS_MODE") or "strict")
+            cfg = client.Configuration.get_default_copy()
+            if tls_mode == "skip-hostname":
+                try:
+                    cfg.assert_hostname = False
+                except Exception:
+                    pass
+            elif tls_mode == "insecure":
+                cfg.verify_ssl = False
+                try:
+                    cfg.assert_hostname = False
+                except Exception:
+                    pass
+            return client.ApiClient(configuration=cfg), info
 
         if isinstance(kubeconfig_param, dict):
             if "path" in kubeconfig_param and isinstance(kubeconfig_param["path"], str) and os.path.exists(kubeconfig_param["path"]):
@@ -186,7 +250,20 @@ class K8sListTool(Tool):
                             info = _extract_info_from_data(data, "path")
                 except Exception:
                     info = {"source": "path"}
-                return client.ApiClient(), info
+                tls_mode = (self.runtime.credentials.get("tlsMode") or os.environ.get("K8S_TLS_MODE") or "strict")
+                cfg = client.Configuration.get_default_copy()
+                if tls_mode == "skip-hostname":
+                    try:
+                        cfg.assert_hostname = False
+                    except Exception:
+                        pass
+                elif tls_mode == "insecure":
+                    cfg.verify_ssl = False
+                    try:
+                        cfg.assert_hostname = False
+                    except Exception:
+                        pass
+                return client.ApiClient(configuration=cfg), info
             if "file" in kubeconfig_param and isinstance(kubeconfig_param["file"], dict):
                 p = kubeconfig_param["file"].get("path")
                 if isinstance(p, str) and os.path.exists(p):
@@ -203,7 +280,20 @@ class K8sListTool(Tool):
                                 info = _extract_info_from_data(data, "file.path")
                     except Exception:
                         info = {"source": "file.path"}
-                    return client.ApiClient(), info
+                    tls_mode = (self.runtime.credentials.get("tlsMode") or os.environ.get("K8S_TLS_MODE") or "strict")
+                    cfg = client.Configuration.get_default_copy()
+                    if tls_mode == "skip-hostname":
+                        try:
+                            cfg.assert_hostname = False
+                        except Exception:
+                            pass
+                    elif tls_mode == "insecure":
+                        cfg.verify_ssl = False
+                        try:
+                            cfg.assert_hostname = False
+                        except Exception:
+                            pass
+                    return client.ApiClient(configuration=cfg), info
             if "content" in kubeconfig_param and isinstance(kubeconfig_param["content"], str):
                 raw = kubeconfig_param["content"].strip()
                 try:
@@ -250,7 +340,20 @@ class K8sListTool(Tool):
                             info = _extract_info_from_data(data, "str.path")
                 except Exception:
                     info = {"source": "str.path"}
-                return client.ApiClient(), info
+                tls_mode = (self.runtime.credentials.get("tlsMode") or os.environ.get("K8S_TLS_MODE") or "strict")
+                cfg = client.Configuration.get_default_copy()
+                if tls_mode == "skip-hostname":
+                    try:
+                        cfg.assert_hostname = False
+                    except Exception:
+                        pass
+                elif tls_mode == "insecure":
+                    cfg.verify_ssl = False
+                    try:
+                        cfg.assert_hostname = False
+                    except Exception:
+                        pass
+                return client.ApiClient(configuration=cfg), info
             try:
                 try:
                     print(f"loading kubeconfig from str base64 len: {len(s)}")
@@ -277,7 +380,20 @@ class K8sListTool(Tool):
                         info = _extract_info_from_data(data, "env.path")
             except Exception:
                 info = {"source": "env.path"}
-            return client.ApiClient(), info
+            tls_mode = (self.runtime.credentials.get("tlsMode") or os.environ.get("K8S_TLS_MODE") or "strict")
+            cfg = client.Configuration.get_default_copy()
+            if tls_mode == "skip-hostname":
+                try:
+                    cfg.assert_hostname = False
+                except Exception:
+                    pass
+            elif tls_mode == "insecure":
+                cfg.verify_ssl = False
+                try:
+                    cfg.assert_hostname = False
+                except Exception:
+                    pass
+            return client.ApiClient(configuration=cfg), info
 
         raise ValueError("Invalid kubeconfig: please upload file or provide valid path")
 

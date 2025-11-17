@@ -2,10 +2,10 @@ identity:
   name: "k8s-events"
   author: "bond-zhu"
   label:
-    en_US: "K8s Events"
-    zh_Hans: "K8s 事件"
-    pt_BR: "K8s Eventos"
-    ja_JP: "K8s イベント"
+    en_US: "Get Events"
+    zh_Hans: "获取事件"
+    pt_BR: "Obter Eventos"
+    ja_JP: "イベント取得"
 description:
   human:
     en_US: "Get cluster events with optional namespace and line limit."

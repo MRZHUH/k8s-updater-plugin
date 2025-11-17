@@ -2,16 +2,16 @@ identity:
   name: "k8s-list"
   author: "bond-zhu"
   label:
-    en_US: "K8s List"
-    zh_Hans: "K8s 列表"
-    pt_BR: "K8s Lista"
-    ja_JP: "K8s リスト"
+    en_US: "List Resources"
+    zh_Hans: "获取资源列表"
+    pt_BR: "Listar Recursos"
+    ja_JP: "リソース一覧取得"
 description:
   human:
-    en_US: "List Kubernetes resources using base64-encoded kubeconfig (or file path). Supports pods, deployments, statefulsets, daemonsets, services, ingresses. Default: pods."
-    zh_Hans: "使用 base64 编码的 kubeconfig（或文件路径）列出 Kubernetes 资源。支持 pods、deployments、statefulsets、daemonsets、services、ingresses。默认：pods。"
-    pt_BR: "Lista recursos do Kubernetes usando kubeconfig em base64 (ou caminho). Suporta pods, deployments, statefulsets, daemonsets, services, ingresses. Padrão: pods."
-    ja_JP: "base64 の kubeconfig（またはパス）で Kubernetes リソースを一覧。pods, deployments, statefulsets, daemonsets, services, ingresses をサポート。デフォルト: pods。"
+    en_US: "List Kubernetes resources using base64-encoded kubeconfig (or file path). Supports nodes, pods, deployments, statefulsets, daemonsets, services, ingresses. Default: pods."
+    zh_Hans: "使用 base64 编码的 kubeconfig（或文件路径）列出 Kubernetes 资源。支持 nodes、pods、deployments、statefulsets、daemonsets、services、ingresses。默认：pods。"
+    pt_BR: "Lista recursos do Kubernetes usando kubeconfig em base64 (ou caminho). Suporta nodes, pods, deployments, statefulsets, daemonsets, services, ingresses. Padrão: pods."
+    ja_JP: "base64 の kubeconfig（またはパス）で Kubernetes リソースを一覧。nodes, pods, deployments, statefulsets, daemonsets, services, ingresses をサポート。デフォルト: pods。"
   llm: "List Kubernetes resources. Accepts resourceType and optional namespace. Returns items with basic attributes."
 parameters:
   - name: namespace
@@ -38,10 +38,10 @@ parameters:
       pt_BR: "Tipo de Recurso"
       ja_JP: "リソース種別"
     human_description:
-      en_US: "Optional. pod/deploy/sts/ds/svc/ing (and full names). Default pod."
-      zh_Hans: "可选。pod/deploy/sts/ds/svc/ing（及全称）。默认 pod。"
-      pt_BR: "Opcional. pod/deploy/sts/ds/svc/ing (e nomes completos). Padrão pod."
-      ja_JP: "任意。pod/deploy/sts/ds/svc/ing（および正式名）。デフォルト pod。"
+      en_US: "Optional. no/pod/deploy/sts/ds/svc/ing (and full names). Default pod."
+      zh_Hans: "可选。no/pod/deploy/sts/ds/svc/ing（及全称）。默认 pod。"
+      pt_BR: "Opcional. no/pod/deploy/sts/ds/svc/ing (e nomes completos). Padrão pod."
+      ja_JP: "任意。no/pod/deploy/sts/ds/svc/ing（および正式名）。デフォルト pod。"
     llm_description: "Resource kind (supports kubectl-style short names)"
     form: llm
 extra:

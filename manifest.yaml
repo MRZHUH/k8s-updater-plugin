@@ -3,10 +3,10 @@ type: plugin
 author: bond-zhu
 name: k8s-updater
 label:
-  en_US: k8s-updater
-  ja_JP: k8s-updater
-  zh_Hans: k8s-updater
-  pt_BR: k8s-updater
+  en_US: K8s Updater
+  ja_JP: K8s Updater
+  zh_Hans: K8s Updater
+  pt_BR: K8s Updater
 description:
   en_US: Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables
   ja_JP: Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables

@@ -2,10 +2,10 @@ identity:
   author: "bond-zhu"
   name: "k8s-updater"
   label:
-    en_US: "k8s-updater"
-    zh_Hans: "k8s-updater"
-    pt_BR: "k8s-updater"
-    ja_JP: "k8s-updater"
+    en_US: "K8s Updater"
+    zh_Hans: "K8s Updater"
+    pt_BR: "K8s Updater"
+    ja_JP: "K8s Updater"
   description:
     en_US: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
     zh_Hans: "Operate kubernetes cluster, such as updating Deployment image and updating Pod environment variables"
@@ -32,6 +32,38 @@ credentials_for_provider:
       zh_Hans: "上传 base64 编码的 kubeconfig 内容；高级用法可填写文件路径。"
       pt_BR: "Envie o conteúdo do kubeconfig em base64; caminho de arquivo também é suportado."
       ja_JP: "base64 でエンコードした kubeconfig をアップロード。上級者向けにファイルパスも対応。"
+  tlsMode:
+    type: select
+    required: false
+    label:
+      en_US: "TLS Verification Mode"
+      zh_Hans: "TLS 校验模式"
+      pt_BR: "Modo de Verificação TLS"
+      ja_JP: "TLS 検証モード"
+    options:
+      - label:
+          en_US: "Strict (verify CA & hostname)"
+          zh_Hans: "严格校验（验证 CA 与主机名）"
+          pt_BR: "Estrito (verificar CA e hostname)"
+          ja_JP: "厳格（CA とホスト名を検証）"
+        value: "strict"
+      - label:
+          en_US: "Skip hostname only"
+          zh_Hans: "仅跳过主机名校验"
+          pt_BR: "Ignorar apenas hostname"
+          ja_JP: "ホスト名のみスキップ"
+        value: "skip-hostname"
+      - label:
+          en_US: "Insecure (skip all verifications)"
+          zh_Hans: "不安全（跳过所有校验）"
+          pt_BR: "Inseguro (pular todas as verificações)"
+          ja_JP: "非安全（すべての検証をスキップ）"
+        value: "insecure"
+    help:
+      en_US: "Choose how to verify TLS when connecting to apiserver."
+      zh_Hans: "连接 apiserver 时的 TLS 校验策略选择。"
+      pt_BR: "Escolha como verificar TLS ao conectar ao apiserver."
+      ja_JP: "apiserver 接続時の TLS 検証方法を選択。"
 
 #########################################################################################
 # If you want to support OAuth, you can uncomment the following code.

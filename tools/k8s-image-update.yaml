@@ -2,10 +2,10 @@ identity:
   name: "k8s-image-update"
   author: "bond-zhu"
   label:
-    en_US: "K8s Image Update"
-    zh_Hans: "K8s 镜像更新"
-    pt_BR: "K8s Atualizar Imagem"
-    ja_JP: "K8s イメージ更新"
+    en_US: "Update Image"
+    zh_Hans: "更新镜像"
+    pt_BR: "Atualizar Imagem"
+    ja_JP: "イメージ更新"
 description:
   human:
     en_US: "Update images of Deployment/StatefulSet/DaemonSet. Provide image and/or tag."
