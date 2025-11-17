@@ -11,6 +11,10 @@
 - 通过 Dify 插件操作 Kubernetes 集群，支持读取资源、更新镜像、更新环境变量、查看事件与资源列表
 - 插件使用 Kubernetes Python SDK 进行连接和操作，凭证来源于用户上传的 `kubeconfig`
 
+### 工作流
+
+![工作流](images/workflow.png)
+
 ### 凭证与 TLS 模式
 
 - 必填凭证：`kubeconfig`（支持 base64 内容或文件路径）
@@ -23,16 +27,16 @@
 
 ### 工具列表与逻辑
 
-- 获取资源列表（List Resources）
+– 获取资源列表（List Resources）
   - 功能：列出 `nodes/pods/deployments/statefulsets/daemonsets/services/ingresses`
-  - 参数：`resourceType`（支持短名：`no/pod/deploy/sts/ds/svc/ing`，默认 `pod`），`namespace`（可选）
+  - 参数：`resourceType`（必填，支持短名：`no/pod/deploy/sts/ds/svc/ing`），`namespace`（可选）
   - 行为：构造 `ApiClient` 后进行一次连通性探测 `list_namespace(limit=1)`；随后按资源类型列出对象并返回精简属性
   - 输出：`items` 列表与时间信息
 
 - 获取资源（Get Resource）
   - 功能：读取资源详情（JSON 或 YAML）
-  - 参数：`resourceType`、`name`（可空）、`namespace`（默认 `default`）、`outputFormat`（`json`/`yaml`，默认 `json`）
-  - 行为：`name` 为空时进入列表模式；对于非命名空间资源（如 `node`）为空则列出所有
+  - 参数：`resourceType`、`name`（可空）、`namespace`（命名空间类资源默认 `default`，对 `node` 忽略）、`outputFormat`（`json`/`yaml`，默认 `json`）
+  - 行为：`name` 为空时进入列表模式；命名空间类资源按 `namespace`（默认 `default`）列出；非命名空间资源（如 `node`）列出所有
   - 输出：`object` 或 `items` 与时间信息
 
 - 更新镜像（Update Image）

@@ -53,7 +53,7 @@ class K8sGetResourceTool(Tool):
                     yield self.create_json_message(j)
                     yield self.create_text_message(self._append_time(f"Fetched deployment {name} in namespace {ns} format={output_format}"))
                 else:
-                    objs = (apps.list_namespaced_deployment(namespace=namespace).items if namespace else apps.list_deployment_for_all_namespaces().items)
+                    objs = apps.list_namespaced_deployment(namespace=ns).items
                     ac = client.ApiClient()
                     items = [ac.sanitize_for_serialization(o) for o in objs]
                     j = {"items": items}
@@ -78,7 +78,7 @@ class K8sGetResourceTool(Tool):
                     yield self.create_json_message(j)
                     yield self.create_text_message(self._append_time(f"Fetched statefulset {name} in namespace {ns} format={output_format}"))
                 else:
-                    objs = (apps.list_namespaced_stateful_set(namespace=namespace).items if namespace else apps.list_stateful_set_for_all_namespaces().items)
+                    objs = apps.list_namespaced_stateful_set(namespace=ns).items
                     ac = client.ApiClient()
                     items = [ac.sanitize_for_serialization(o) for o in objs]
                     j = {"items": items}
@@ -103,7 +103,7 @@ class K8sGetResourceTool(Tool):
                     yield self.create_json_message(j)
                     yield self.create_text_message(self._append_time(f"Fetched daemonset {name} in namespace {ns} format={output_format}"))
                 else:
-                    objs = (apps.list_namespaced_daemon_set(namespace=namespace).items if namespace else apps.list_daemon_set_for_all_namespaces().items)
+                    objs = apps.list_namespaced_daemon_set(namespace=ns).items
                     ac = client.ApiClient()
                     items = [ac.sanitize_for_serialization(o) for o in objs]
                     j = {"items": items}
@@ -128,7 +128,7 @@ class K8sGetResourceTool(Tool):
                     yield self.create_json_message(j)
                     yield self.create_text_message(self._append_time(f"Fetched service {name} in namespace {ns} format={output_format}"))
                 else:
-                    objs = (core.list_namespaced_service(namespace=namespace).items if namespace else core.list_service_for_all_namespaces().items)
+                    objs = core.list_namespaced_service(namespace=ns).items
                     ac = client.ApiClient()
                     items = [ac.sanitize_for_serialization(o) for o in objs]
                     j = {"items": items}
@@ -153,7 +153,7 @@ class K8sGetResourceTool(Tool):
                     yield self.create_json_message(j)
                     yield self.create_text_message(self._append_time(f"Fetched ingress {name} in namespace {ns} format={output_format}"))
                 else:
-                    objs = (net.list_namespaced_ingress(namespace=namespace).items if namespace else net.list_ingress_for_all_namespaces().items)
+                    objs = net.list_namespaced_ingress(namespace=ns).items
                     ac = client.ApiClient()
                     items = [ac.sanitize_for_serialization(o) for o in objs]
                     j = {"items": items}
@@ -178,7 +178,7 @@ class K8sGetResourceTool(Tool):
                     yield self.create_json_message(j)
                     yield self.create_text_message(self._append_time(f"Fetched pod {name} in namespace {ns} format={output_format}"))
                 else:
-                    objs = (core.list_namespaced_pod(namespace=namespace).items if namespace else core.list_pod_for_all_namespaces().items)
+                    objs = core.list_namespaced_pod(namespace=ns).items
                     ac = client.ApiClient()
                     items = [ac.sanitize_for_serialization(o) for o in objs]
                     j = {"items": items}

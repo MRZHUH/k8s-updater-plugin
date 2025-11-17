@@ -54,11 +54,11 @@ parameters:
       ja_JP: "Namespace"
     form: llm
     human_description:
-      en_US: "Optional; default to 'default'"
-      zh_Hans: "可选，默认 'default'"
-      pt_BR: "Opcional; padrão 'default'"
-      ja_JP: "任意、デフォルトは 'default'"
-    llm_description: "Namespace"
+      en_US: "Optional; defaults to 'default' for namespaced kinds; ignored for node"
+      zh_Hans: "可选；命名空间类资源默认 'default'；对 node 忽略"
+      pt_BR: "Opcional; usa 'default' para tipos com namespace; ignorado para node"
+      ja_JP: "任意；namespace 対象は 'default'。node には無視"
+    llm_description: "Defaults to 'default' for namespaced kinds; ignored for node"
   - name: outputFormat
     type: string
     required: false

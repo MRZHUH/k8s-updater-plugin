@@ -23,26 +23,26 @@ parameters:
       pt_BR: "Namespace"
       ja_JP: "Namespace"
     human_description:
-      en_US: "Optional namespace. If empty, lists across all namespaces."
-      zh_Hans: "可选。为空则列出所有命名空间。"
-      pt_BR: "Opcional. Vazio lista todos os namespaces."
-      ja_JP: "任意。空の場合は全ての namespace を対象。"
-    llm_description: "If provided, limit listing to this namespace; otherwise list all."
+      en_US: "Optional. If empty, defaults to 'default' for namespaced kinds; ignored for cluster-scoped (node)."
+      zh_Hans: "可选。为空时命名空间类资源默认 'default'；对集群级（node）忽略。"
+      pt_BR: "Opcional. Vazio usa 'default' para tipos com namespace; ignorado para escopo de cluster (node)."
+      ja_JP: "任意。空なら namespace 対象は 'default'。クラスタスコープ（node）は無視。"
+    llm_description: "Defaults to 'default' for namespaced kinds; ignored for node."
     form: llm
   - name: resourceType
     type: string
-    required: false
+    required: true
     label:
       en_US: "Resource Type"
       zh_Hans: "资源类型"
       pt_BR: "Tipo de Recurso"
       ja_JP: "リソース種別"
     human_description:
-      en_US: "Optional. no/pod/deploy/sts/ds/svc/ing (and full names). Default pod."
-      zh_Hans: "可选。no/pod/deploy/sts/ds/svc/ing（及全称）。默认 pod。"
-      pt_BR: "Opcional. no/pod/deploy/sts/ds/svc/ing (e nomes completos). Padrão pod."
-      ja_JP: "任意。no/pod/deploy/sts/ds/svc/ing（および正式名）。デフォルト pod。"
-    llm_description: "Resource kind (supports kubectl-style short names)"
+      en_US: "Required. one of no/pod/deploy/sts/ds/svc/ing (or full names)."
+      zh_Hans: "必填。no/pod/deploy/sts/ds/svc/ing（或全称）之一。"
+      pt_BR: "Obrigatório. um de no/pod/deploy/sts/ds/svc/ing (ou nomes completos)."
+      ja_JP: "必須。no/pod/deploy/sts/ds/svc/ing（正式名も可）のいずれか。"
+    llm_description: "Required resource kind (supports kubectl-style short names)"
     form: llm
 extra:
   python:
