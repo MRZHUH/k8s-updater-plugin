@@ -1,55 +1,113 @@
-<!--
-  ~ Dify Marketplace Template Icon
-  ~ Dify 市场模板图标
-  ~ Dify マーケットプレイステンプレートアイコン
-  ~
-  ~ WARNING / 警告 / 警告:
-  ~ 
-  ~ English: This is a TEMPLATE icon from Dify Marketplace only. You MUST NOT use this default icon in any way.
-  ~ Please replace it with your own custom icon before submit this plugin.
-  ~ 
-  ~ 中文: 这只是来自 Dify 市场的模板图标。您绝对不能以任何方式使用此默认图标。
-  ~ 请在提交此插件之前将其替换为您自己的自定义图标。
-  ~ 
-  ~ 日本語: これは Dify マーケットプレイスのテンプレートアイコンです。このデフォルトアイコンをいかなる方法でも使用してはいけません。
-  ~ このプラグインを提出する前に、独自のカスタムアイコンに置き換えてください。
-  ~ 
-  ~ DIFY_MARKETPLACE_TEMPLATE_ICON_DO_NOT_USE
-  -->
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_15253_95095)">
-<rect width="40" height="40" fill="#0033FF"/>
-<g filter="url(#filter0_n_15253_95095)">
-<rect width="40" height="40" fill="url(#paint0_linear_15253_95095)"/>
-</g>
-<path d="M28 10C28.5523 10 29 10.4477 29 11V16C29 16.5523 28.5523 17 28 17H23V30C23 30.5523 22.5523 31 22 31H18C17.4477 31 17 30.5523 17 30V17H11.5C10.9477 17 10.5 16.5523 10.5 16V13.618C10.5 13.2393 10.714 12.893 11.0528 12.7236L16.5 10H28ZM23 12H16.9721L12.5 14.2361V15H19V29H21V15H23V12ZM27 12H25V15H27V12Z" fill="white"/>
-</g>
-<defs>
-<filter id="filter0_n_15253_95095" x="0" y="0" width="40" height="40" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-<feTurbulence type="fractalNoise" baseFrequency="2 2" stitchTiles="stitch" numOctaves="3" result="noise" seed="8033" />
-<feComponentTransfer in="noise" result="coloredNoise1">
-<feFuncR type="linear" slope="2" intercept="-0.5" />
-<feFuncG type="linear" slope="2" intercept="-0.5" />
-<feFuncB type="linear" slope="2" intercept="-0.5" />
-<feFuncA type="discrete" tableValues="1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
-</feComponentTransfer>
-<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
-<feComponentTransfer in="noise1Clipped" result="color1">
-<feFuncA type="table" tableValues="0 0.06" />
-</feComponentTransfer>
-<feMerge result="effect1_noise_15253_95095">
-<feMergeNode in="shape" />
-<feMergeNode in="color1" />
-</feMerge>
-</filter>
-<linearGradient id="paint0_linear_15253_95095" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-<stop stop-color="#1443FF"/>
-<stop offset="1" stop-color="#0031F5"/>
-</linearGradient>
-<clipPath id="clip0_15253_95095">
-<rect width="40" height="40" fill="white"/>
-</clipPath>
-</defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#5B9BFF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#326CE5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2557C5;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="centerGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#E8F2FF;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="softShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- 背景光晕 -->
+  <circle cx="128" cy="128" r="115" fill="#326CE5" opacity="0.1"/>
+  <circle cx="128" cy="128" r="95" fill="#326CE5" opacity="0.15"/>
+  
+  <!-- 主体六边形 -->
+  <path d="M 128 25 L 215 72.5 L 215 167.5 L 128 215 L 41 167.5 L 41 72.5 Z" 
+        fill="url(#bgGradient)" 
+        stroke="#5B9BFF" 
+        stroke-width="2"
+        filter="url(#softShadow)"/>
+  
+  <!-- 装饰性内圈 -->
+  <path d="M 128 40 L 200 80 L 200 160 L 128 200 L 56 160 L 56 80 Z" 
+        fill="none" 
+        stroke="#FFFFFF" 
+        stroke-width="1" 
+        opacity="0.2"/>
+  
+  <!-- 中央舵轮背景光晕 -->
+  <circle cx="128" cy="128" r="55" fill="#FFFFFF" opacity="0.2" filter="url(#glow)"/>
+  
+  <!-- 舵轮外圈 -->
+  <circle cx="128" cy="128" r="48" fill="url(#centerGlow)" stroke="#1B4D9E" stroke-width="3"/>
+  
+  <!-- 舵轮内圈 -->
+  <circle cx="128" cy="128" r="30" fill="#326CE5"/>
+  <circle cx="128" cy="128" r="30" fill="url(#bgGradient)" opacity="0.6"/>
+  
+  <!-- 7个优雅的辐条 -->
+  <g stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" opacity="0.95">
+    <line x1="128" y1="128" x2="128" y2="75" transform="rotate(0 128 128)"/>
+    <line x1="128" y1="128" x2="128" y2="75" transform="rotate(51.43 128 128)"/>
+    <line x1="128" y1="128" x2="128" y2="75" transform="rotate(102.86 128 128)"/>
+    <line x1="128" y1="128" x2="128" y2="75" transform="rotate(154.29 128 128)"/>
+    <line x1="128" y1="128" x2="128" y2="75" transform="rotate(205.71 128 128)"/>
+    <line x1="128" y1="128" x2="128" y2="75" transform="rotate(257.14 128 128)"/>
+    <line x1="128" y1="128" x2="128" y2="75" transform="rotate(308.57 128 128)"/>
+  </g>
+  
+  <!-- 辐条末端装饰点 -->
+  <g fill="#FFFFFF" opacity="0.9">
+    <circle cx="128" cy="75" r="5" transform="rotate(0 128 128)"/>
+    <circle cx="128" cy="75" r="5" transform="rotate(51.43 128 128)"/>
+    <circle cx="128" cy="75" r="5" transform="rotate(102.86 128 128)"/>
+    <circle cx="128" cy="75" r="5" transform="rotate(154.29 128 128)"/>
+    <circle cx="128" cy="75" r="5" transform="rotate(205.71 128 128)"/>
+    <circle cx="128" cy="75" r="5" transform="rotate(257.14 128 128)"/>
+    <circle cx="128" cy="75" r="5" transform="rotate(308.57 128 128)"/>
+  </g>
+  
+  <!-- 更新箭头图标（环形箭头，更优雅） -->
+  <g transform="translate(128, 175)">
+    <circle cx="0" cy="0" r="18" fill="#FFFFFF" opacity="0.95" filter="url(#softShadow)"/>
+    <path d="M -6 -8 Q -10 -8 -10 -4 Q -10 0 -6 0 M -6 0 L -9 -3 M -6 0 L -3 -3" 
+          stroke="#326CE5" 
+          stroke-width="2.5" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+    <path d="M 6 8 Q 10 8 10 4 Q 10 0 6 0 M 6 0 L 9 3 M 6 0 L 3 3" 
+          stroke="#326CE5" 
+          stroke-width="2.5" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+  </g>
+  
+
+  
+  <!-- 装饰性光点 -->
+  <g opacity="0.6">
+    <circle cx="75" cy="75" r="2" fill="#FFFFFF"/>
+    <circle cx="181" cy="75" r="2" fill="#FFFFFF"/>
+    <circle cx="75" cy="181" r="2" fill="#FFFFFF"/>
+    <circle cx="181" cy="181" r="2" fill="#FFFFFF"/>
+  </g>
+  
+
 </svg>
